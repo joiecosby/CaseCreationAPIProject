@@ -28,7 +28,6 @@ global with sharing class CaseCreationApi {
             this.isSuccess = true;
             this.caseRecord = caseRecord;
             this.message = 'This case was successfully created!';
-            
         }
 
         global void processErrors(String stackTrace, String message) {
