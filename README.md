@@ -1,18 +1,54 @@
-# Salesforce DX Project: Next Steps
+# CaseCreationApi — Quick Postman Usage
 
-Now that you’ve created a Salesforce DX project, what’s next? Here are some documentation resources to get you started.
+This shows how to call the CaseCreationApi REST endpoint in Salesforce.
 
-## How Do You Plan to Deploy Your Changes?
+## API Endpoint
+POST /services/apexrest/v1/caseCreation/
 
-Do you want to deploy a set of changes, or create a self-contained application? Choose a [development model](https://developer.salesforce.com/tools/vscode/en/user-guide/development-models).
+## Authentication
 
-## Configure Your Salesforce DX Project
+**Username/Password OAuth Flow:**
 
-The `sfdx-project.json` file contains useful configuration information for your project. See [Salesforce DX Project Configuration](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_ws_config.htm) in the _Salesforce DX Developer Guide_ for details about this file.
+1. Request access token:
+POST https://login.salesforce.com/services/oauth2/token
+Content-Type: application/x-www-form-urlencoded
 
-## Read All About It
+Body parameters (x-www-form-urlencoded):
+- grant_type = `password`
+- client_id = `<Connected App Consumer Key>`
+- client_secret = `<Connected App Consumer Secret>`
+- username = `<Salesforce username>`
+- password = `<Salesforce password + security token>`
 
-- [Salesforce Extensions Documentation](https://developer.salesforce.com/tools/vscode/)
-- [Salesforce CLI Setup Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_setup.meta/sfdx_setup/sfdx_setup_intro.htm)
-- [Salesforce DX Developer Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_intro.htm)
-- [Salesforce CLI Command Reference](https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/cli_reference.htm)
+2. Copy `access_token` from the response.
+
+3. Include in Postman **Headers**:
+- Authorization: Bearer <ACCESS_TOKEN>
+- Content-Type: application/json
+
+## Example JSON Body
+
+```json
+{
+    "subject": "Test Case",
+    "description": "This case was created via the API for testing purposes. Use this for validating API integration.",
+    "status": "New",
+    "origin": "Web",
+    "name": "Jack Dolittle",
+    "phone": "555 123-4567",
+    "email": "jack.dolittle@example.com"
+}
+```
+
+## Steps in Postman
+
+1. Create a new **POST** request.
+2. Set the URL: https://orgfarm-54d3776a26-dev-ed.develop.my.salesforce.com/services/apexrest/v1/caseCreation/
+3. Add headers as shown above.
+4. Select **Body → raw → JSON**, paste the payload.
+5. Click **Send** to create a Case.
+
+## Response
+
+- **201 Created**: Case successfully created. Returns JSON with the Case record.
+- **400 Bad Request**: Invalid payload or error (logged in `ErrorLogger`).
